@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>linger — stay a while</title>
+<meta name="description" content="Linger helps friend groups abroad find the weekend everyone's free, plus study abroad scholarships and a call-home clock.">
+<meta property="og:title" content="linger — stay a while">
+<meta property="og:description" content="Find the weekend your whole crew is free. Study abroad scholarships. A call-home clock.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B2340; --ink-2:#4A5370; --line:#ECE5DD; --bg:#FFFFFF; --paper:#FFF8F1;
+  --orange:#C9561F; --sun1:#FFC24B; --sun2:#F2762E; --green:#23885B; --green-bg:#E6F4EC;
+  --maybe:#F6B93B; --maybe-bg:#FFF3D6; --busy-bg:#F1EEF0; --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--orange)}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.wordmark{font-family:Fraunces,Georgia,serif;font-weight:600;color:var(--orange);font-size:28px;letter-spacing:-.5px;text-decoration:none}
+.wordmark .r{font-family:Pacifico,cursive;font-weight:400;font-size:.92em}
+header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+nav.links{display:flex;gap:22px;flex-wrap:wrap}
+nav.links a{color:var(--ink);text-decoration:none;font-weight:500;font-size:15px}
+nav.links a:hover{color:var(--orange)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:0;font:600 15px Inter,sans-serif;cursor:pointer;text-decoration:none;color:#3A1A06;background:linear-gradient(135deg,var(--sun1),var(--sun2))}
+.btn:hover{filter:brightness(1.04)}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{min-height:36px;padding:0 14px;font-size:14px}
+.hero{padding:88px 0 72px;background:radial-gradient(1100px 420px at 85% -10%,#FFE3BF 0,transparent 60%),radial-gradient(700px 300px at 0% 110%,#FFF0D9 0,transparent 60%)}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:600;color:var(--orange)}
+.hero h1{font-size:clamp(40px,7vw,76px);letter-spacing:-1.5px;margin:14px 0 18px;max-width:14ch}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--orange)}
+.hero p.lede{font-size:19px;color:var(--ink-2);max-width:54ch;margin:0 0 28px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
+section{padding:80px 0;border-top:1px solid var(--line)}
+section.alt{background:var(--paper)}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:32px}
+.sec-head h2{font-size:clamp(30px,4.5vw,44px);letter-spacing:-.6px;margin-top:8px}
+.sec-head p{color:var(--ink-2);max-width:52ch;margin:10px 0 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.muted{color:var(--ink-2)}
+.small{font-size:14px}
+/* breakdown */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.step .n{font-family:Fraunces,serif;font-size:14px;color:var(--orange);font-weight:600}
+.step h3{font-size:22px;margin:6px 0 8px}
+.step p{margin:0;color:var(--ink-2);font-size:15px}
+.tabs-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:14px}
+.pill b{font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--sun1),var(--sun2));flex:none}
+.why{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:28px}
+@media (max-width:760px){.why{grid-template-columns:1fr}}
+.quote{font-family:Fraunces,serif;font-style:italic;font-size:22px;line-height:1.35}
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{display:flex;gap:14px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.timeline li:last-child{border:0}
+.timeline .when{min-width:96px;font-weight:600;color:var(--orange)}
+/* tool: weekend finder */
+.tool-grid{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+@media (max-width:860px){.tool-grid{grid-template-columns:1fr}}
+label{font-weight:600;font-size:14px;display:block;margin-bottom:6px}
+input[type=text],input[type=date],select{width:100%;min-height:44px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;font:15px Inter,sans-serif;color:var(--ink);background:#fff}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid #FFC24B;outline-offset:2px}
+.field{margin-bottom:16px}
+.row{display:flex;gap:8px}
+.people{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.person{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 4px;font-size:14px}
+.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:13px;color:#fff;flex:none}
+.x{border:0;background:none;cursor:pointer;color:var(--ink-2);width:28px;height:28px;border-radius:50%;font-size:16px}
+.x:hover{background:#fff}
+.grid-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+table.wk{border-collapse:separate;border-spacing:0;width:100%;min-width:520px}
+table.wk th,table.wk td{padding:6px;text-align:center;border-bottom:1px solid var(--line);font-size:14px}
+table.wk thead th{position:sticky;top:0;background:#fff;font-weight:600}
+table.wk th.who{text-align:left;padding-left:14px;white-space:nowrap}
+table.wk td.date{text-align:left;padding-left:14px;white-space:nowrap;font-weight:500}
+table.wk td.date .sub{display:block;font-weight:400;color:var(--ink-2);font-size:12px}
+table.wk tr.best td{background:#F3FBF6}
+.cell{width:100%;min-width:64px;min-height:40px;border-radius:10px;border:1.5px dashed var(--line);background:#fff;cursor:pointer;font:600 13px Inter,sans-serif;color:var(--ink-2)}
+.cell[data-s="f"]{background:var(--green-bg);border:1.5px solid #9FD6B9;color:var(--green)}
+.cell[data-s="m"]{background:var(--maybe-bg);border:1.5px solid #F2D388;color:#8A5A00}
+.cell[data-s="b"]{background:var(--busy-bg);border:1.5px solid #DDD5DA;color:#6B6070}
+.score{font-weight:600;white-space:nowrap}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin:12px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:4px;display:inline-block}
+.result{margin-bottom:16px;padding:18px 20px;border-radius:var(--radius);background:linear-gradient(135deg,#FFF4E3,#FFE6CF);border:1px solid #F8D3AE}
+.result h3{font-size:22px}
+.result p{margin:6px 0 0;color:var(--ink-2)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:50}
+.toast.on{opacity:1;transform:translateX(-50%)}
+/* call home */
+.clock-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.bigtime{font-family:Fraunces,serif;font-size:44px;font-weight:600;letter-spacing:-1px}
+.hours{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;margin-top:10px}
+.hr{height:38px;border-radius:6px;background:var(--busy-bg);position:relative}
+.hr.ok{background:linear-gradient(180deg,var(--sun1),var(--sun2))}
+.hr.now{outline:2px solid var(--ink);outline-offset:1px}
+.hours-labels{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;font-size:11px;color:var(--ink-2);margin-top:4px}
+.hours-labels span{text-align:center}
+@media (max-width:560px){.hours-labels span:nth-child(odd){visibility:hidden}}
+/* scholarships */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{min-height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:500 14px Inter,sans-serif;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sch-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.sch{display:flex;flex-direction:column;gap:10px}
+.sch h3{font-size:21px}
+.sch .award{font-weight:600}
+.sch .meta{font-size:14px;color:var(--ink-2);margin:0}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.badge.soon{background:#FFE6D3;color:#9A3B0C}
+.badge.open{background:var(--green-bg);color:var(--green)}
+.badge.closed{background:var(--busy-bg);color:#6B6070}
+.badge.tbd{background:var(--maybe-bg);color:#7A4F00}
+.sch .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:6px}
+.save{min-height:36px;border-radius:999px;border:1.5px solid var(--line);background:#fff;padding:0 14px;font:600 13px Inter,sans-serif;cursor:pointer;color:var(--ink)}
+.save[aria-pressed="true"]{background:var(--green-bg);border-color:#9FD6B9;color:var(--green)}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:32px}
+.tips h3{font-size:18px;margin-bottom:6px}
+.tips p{margin:0;font-size:15px;color:var(--ink-2)}
+footer{padding:48px 0 64px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:640px){nav.links{display:none}.hero{padding:56px 0 48px}section{padding:56px 0}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="linger home">linge<span class="r">r</span></a>
+    <nav class="links" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#weekend">Weekend finder</a>
+      <a href="#home">Call home</a>
+      <a href="#tips">Before you go</a>
+      <a href="#funding">Scholarships</a>
+    </nav>
+    <a class="btn small" href="#weekend">Find a weekend</a>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">For semesters abroad · Stay a while</div>
+    <h1>The weekend you're <em>all</em> free, found in a minute.</h1>
+    <p class="lede">Linger is one shared planner for a friend group abroad: the places you've saved, the weekends that line up, and the funding that gets you there. Start with the free tools below — no sign-up.</p>
+    <div class="ctas">
+      <a class="btn" href="#weekend">Try the weekend finder</a>
+      <a class="btn ghost" href="#funding">Browse scholarships</a>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">No. 01 · The app</div>
+        <h2>Six tabs became one folder.</h2>
+        <p>One weekend trip used to take TikTok saves, a notes doc of places, a scheduling poll, flight tabs, a group chat and a split-bill app. Linger puts the decision in one place, so you spend less time in tabs and more time there.</p>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="card step"><div class="n">01</div><h3>Start a trip</h3><p>Make a folder — "Prague" — and drop the invite link in the group chat. Friends join without a password.</p></div>
+      <div class="card step"><div class="n">02</div><h3>Save &amp; vote</h3><p>Paste TikToks, Reels and pins. Everyone votes on spots; the ones most of you want make the list.</p></div>
+      <div class="card step"><div class="n">03</div><h3>Find the weekend</h3><p>Each person taps their free weekends. Linger shows where the whole crew lines up.</p></div>
+      <div class="card step"><div class="n">04</div><h3>Lock it &amp; go</h3><p>Send an RSVP invite, track who booked what, and split costs in your home currency.</p></div>
+    </div>
+    <div class="tabs-row" aria-label="Inside each trip folder">
+      <span class="pill"><span class="dot"></span><b>Plan</b> spots &amp; votes</span>
+      <span class="pill"><span class="dot"></span><b>Inspo</b> places &amp; photo ideas</span>
+      <span class="pill"><span class="dot"></span><b>Links</b> bookings &amp; getting around</span>
+      <span class="pill"><span class="dot"></span><b>When</b> dates &amp; invite</span>
+      <span class="pill"><span class="dot"></span><b>Split</b> who owes what</span>
+    </div>
+    <div class="why">
+      <div class="card">
+        <div class="eyebrow">Why it exists</div>
+        <p class="quote">"A doc full of places, friends with different class schedules, endless flight tabs, and people back home in another time zone."</p>
+        <p class="muted small">Linger started in 2021 as Always Through, a small site of resources and scholarships for students getting through hard seasons. After a semester in Copenhagen, it grew into the tool its founder wished she'd had.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Where it's headed</div>
+        <ul class="timeline">
+          <li><span class="when">Now</span><span>Free tools on this site: weekend finder, call-home clock, scholarships</span></li>
+          <li><span class="when">Winter</span><span>The app: shared trip folders that sync live, on laptop and phone, offline-ready</span></li>
+          <li><span class="when">Spring '27</span><span>Pilot with five friend groups studying abroad</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEEKEND FINDER -->
+<section id="weekend" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">No. 02 · Tool</div>
+        <h2>Weekend finder</h2>
+        <p>Add your crew, tap each weekend to cycle <b>free → maybe → busy</b>, and see where everyone lines up. Share the link in the group chat so friends can fill in their own row — it saves in the link and on this device.</p>
+      </div>
+    </div>
+    <div class="tool-grid">
+      <div class="card">
+        <div class="field">
+          <label for="tripName">Trip name</label>
+          <input id="tripName" type="text" placeholder="e.g. Prague" maxlength="40">
+        </div>
+        <div class="field">
+          <label for="startDate">First weekend on or after</label>
+          <input id="startDate" type="date">
+        </div>
+        <div class="field">
+          <label for="weeks">How many weekends</label>
+          <select id="weeks"></select>
+        </div>
+        <div class="field">
+          <label for="newPerson">Who's coming</label>
+          <ul class="people" id="people"></ul>
+          <form class="row" id="addPerson">
+            <input id="newPerson" type="text" placeholder="Add a name" maxlength="24" autocomplete="off">
+            <button class="btn small" type="submit">Add</button>
+          </form>
+        </div>
+        <div class="row" style="flex-wrap:wrap">
+          <button class="btn small" id="shareBtn" type="button">Copy share link</button>
+          <button class="btn ghost small" id="resetBtn" type="button">Start over</button>
+        </div>
+      </div>
+      <div>
+        <div class="result" id="result" aria-live="polite"></div>
+        <div class="grid-scroll"><table class="wk" id="wkTable"></table></div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--green-bg);border:1px solid #9FD6B9"></i>Free</span>
+          <span><i class="sw" style="background:var(--maybe-bg);border:1px solid #F2D388"></i>Maybe</span>
+          <span><i class="sw" style="background:var(--busy-bg);border:1px solid #DDD5DA"></i>Busy</span>
+          <span><i class="sw" style="border:1px dashed var(--line)"></i>Not marked yet</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALL HOME -->
+<section id="home">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">No. 03 · Tool</div>
+        <h2>Call-home clock</h2>
+        <p>Pick where you are and where home is. The orange hours are when you're both awake (8am–11pm), so nobody gets a 3am "just checking in."</p>
+      </div>
+    </div>
+    <div class="clock-grid">
+      <div class="card">
+        <label for="tzHere">I'm in</label>
+        <select id="tzHere"></select>
+        <div class="bigtime" id="timeHere">—</div>
+        <div class="muted small" id="dayHere"></div>
+      </div>
+      <div class="card">
+        <label for="tzHome">Home is</label>
+        <select id="tzHome"></select>
+        <div class="bigtime" id="timeHome">—</div>
+        <div class="muted small" id="dayHome"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+        <h3 style="font-size:22px" id="callVerdict">—</h3>
+        <span class="muted small">Next 24 hours, your time</span>
+      </div>
+      <div class="hours" id="hours" role="img" aria-label=""></div>
+      <div class="hours-labels" id="hoursLabels" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE YOU GO -->
+<section id="tips" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">No. 04 · Before you go</div>
+        <h2>The things nobody told me to think about.</h2>
+        <p>Small stuff that turned out to matter a lot during my semester in Copenhagen.</p>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="card step"><div class="n">01 · Plugs</div><h3>Get the right adapters</h3><p>Check the plug type for every country you'll visit, not just where you live. Bring a couple of adapters and a power strip so one adapter charges everything.</p></div>
+      <div class="card step"><div class="n">02 · Home</div><h3>Set call times early</h3><p>Agree on when you're usually free and when your family is, before you leave. A rough weekly rhythm beats guessing across time zones. The call-home clock above helps.</p></div>
+      <div class="card step"><div class="n">03 · Money</div><h3>Build a cushion</h3><p>A side gig before you go, or a few scholarship applications, gives you room to say yes to trips instead of stressing over every euro.</p></div>
+      <div class="card step"><div class="n">04 · Keepsakes</div><h3>Find your way to remember</h3><p>For me it was decorating and curating little photo posts. It kept my family in the loop and kept every memory safe in one place. Find the version that's yours.</p></div>
+      <div class="card step"><div class="n">05 · Language</div><h3>Learn a little first</h3><p>Even a few weeks of Duolingo before you land makes ordering coffee and asking directions feel less scary, and helps a new place feel like yours faster.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHOLARSHIPS -->
+<section id="funding">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">No. 05 · Funding</div>
+        <h2>Scholarships, so cost doesn't decide for you.</h2>
+        <p>Study abroad awards first, plus a few for high schoolers. Save the ones you're applying for — they stay on this device. Deadlines last checked <b>Oct 30, 2026</b>; always confirm on the official site before you apply.</p>
+      </div>
+    </div>
+    <div class="filters" role="group" aria-label="Filter scholarships">
+      <button class="chip" data-f="all" aria-pressed="true">All</button>
+      <button class="chip" data-f="abroad" aria-pressed="false">Study abroad</button>
+      <button class="chip" data-f="hs" aria-pressed="false">Before college</button>
+      <button class="chip" data-f="need" aria-pressed="false">Need-based / first-gen</button>
+      <button class="chip" data-f="lang" aria-pressed="false">Language</button>
+      <button class="chip" data-f="saved" aria-pressed="false">My saved (<span id="savedCount">0</span>)</button>
+    </div>
+    <div class="sch-list" id="schList"></div>
+    <div class="tips">
+      <div class="card"><h3>Start with your program</h3><p>Providers like IES, CIEE and AIFS have their own aid, often with first-gen awards and shorter applications.</p></div>
+      <div class="card"><h3>Ask your campus office early</h3><p>Boren and some others need a campus review weeks before the national deadline.</p></div>
+      <div class="card"><h3>Pell Grant? Look at Gilman</h3><p>It's built for students receiving Pell, and pairs well with program aid.</p></div>
+      <div class="card"><h3>Reuse your story</h3><p>One strong essay on why this place, and what you'll bring back, adapts to most applications.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><a class="wordmark" href="#top" style="font-size:22px">linge<span class="r">r</span></a><div>Stay a while.</div></div>
+    <div style="max-width:46ch">Linger began as Always Through (2021). Scholarship details change often; Linger isn't affiliated with any program listed. Tools run in your browser and nothing is sent to a server.</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("on"),2200); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* ---------------- WEEKEND FINDER ---------------- */
+const COLORS = ["#E07A3F","#2E8C9E","#7A5BC9","#C9466F","#3F8F4F","#B0702A","#4C6FD1","#A64CA6"];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function nextFriday(from){ const d=new Date(from.getFullYear(),from.getMonth(),from.getDate()); const add=(5-d.getDay()+7)%7; d.setDate(d.getDate()+add); return d; }
+function parseISO(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); }
+
+function defaultState(){ return { t:"", s:iso(nextFriday(new Date())), w:12, p:[] }; }
+function encode(st){ return btoa(unescape(encodeURIComponent(JSON.stringify(st)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function decode(str){
+  try{
+    str=str.replace(/-/g,"+").replace(/_/g,"/"); while(str.length%4) str+="=";
+    const o=JSON.parse(decodeURIComponent(escape(atob(str))));
+    if(!o || typeof o!=="object" || !Array.isArray(o.p)) return null;
+    return { t:String(o.t||"").slice(0,40), s:/^\d{4}-\d{2}-\d{2}$/.test(o.s)?o.s:iso(nextFriday(new Date())),
+      w:Math.min(26,Math.max(2,parseInt(o.w,10)||12)),
+      p:o.p.slice(0,12).map(x=>({n:String(x.n||"").slice(0,24), a:(x.a&&typeof x.a==="object")?x.a:{}})).filter(x=>x.n) };
+  }catch(e){ return null; }
+}
+let st = null;
+const fromHash = location.hash.startsWith("#w=") ? decode(location.hash.slice(3)) : null;
+st = fromHash || store.get("linger.weekend", null) || defaultState();
+if(fromHash){ store.set("linger.weekend", st); }
+
+function weekends(){
+  const out=[]; const start=nextFriday(parseISO(st.s));
+  for(let i=0;i<st.w;i++){ const f=new Date(start); f.setDate(f.getDate()+7*i); const s=new Date(f); s.setDate(s.getDate()+2); out.push({f,s}); }
+  return out;
+}
+function label(w){
+  const a=MON[w.f.getMonth()]+" "+w.f.getDate();
+  const b=(w.s.getMonth()===w.f.getMonth()?"":MON[w.s.getMonth()]+" ")+w.s.getDate();
+  return a+"–"+b;
+}
+function save(silentHash){
+  store.set("linger.weekend", st);
+  if(!silentHash) history.replaceState(null,"","#w="+encode(st));
+}
+function initials(n){ return n.trim().split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase(); }
+
+const weeksSel=$("#weeks");
+for(let i=4;i<=20;i++){ const o=document.createElement("option"); o.value=i; o.textContent=i+" weekends"; weeksSel.appendChild(o); }
+
+function renderWeekend(){
+  $("#tripName").value=st.t; $("#startDate").value=st.s; weeksSel.value=String(st.w);
+  if(!weeksSel.value){ const o=document.createElement("option"); o.value=st.w; o.textContent=st.w+" weekends"; weeksSel.appendChild(o); weeksSel.value=String(st.w); }
+  // people chips
+  $("#people").innerHTML = st.p.map((p,i)=>`<li class="person"><span class="avatar" style="background:${COLORS[i%COLORS.length]}" aria-hidden="true">${esc(initials(p.n))}</span>${esc(p.n)}<button class="x" type="button" data-rm="${i}" aria-label="Remove ${esc(p.n)}">×</button></li>`).join("");
+  const wks=weekends();
+  const n=st.p.length;
+  // scores
+  const scores=wks.map((w,wi)=>{ let free=0,maybe=0,busy=0,unk=0; st.p.forEach(p=>{const v=p.a[wi]; if(v==="f")free++; else if(v==="m")maybe++; else if(v==="b")busy++; else unk++;}); return {wi,free,maybe,busy,unk,score:free+maybe*0.5}; });
+  const bestScore=n?Math.max(...scores.map(s=>s.score)):0;
+  // table
+  let h="<thead><tr><th class='who' scope='col'>Weekend</th>";
+  st.p.forEach((p,i)=>{ h+=`<th scope="col"><span class="avatar" style="background:${COLORS[i%COLORS.length]};margin:0 auto" title="${esc(p.n)}">${esc(initials(p.n))}</span><span class="sr">${esc(p.n)}</span></th>`; });
+  h+="<th scope='col'>Free</th></tr></thead><tbody>";
+  wks.forEach((w,wi)=>{
+    const s=scores[wi]; const isBest=n&&s.score===bestScore&&bestScore>0;
+    h+=`<tr class="${isBest?"best":""}"><td class="date">${label(w)}<span class="sub">${w.f.getFullYear()}</span></td>`;
+    st.p.forEach((p,pi)=>{ const v=p.a[wi]||""; const txt=v==="f"?"Free":v==="m"?"Maybe":v==="b"?"Busy":"—";
+      h+=`<td><button type="button" class="cell" data-p="${pi}" data-w="${wi}" data-s="${v}" aria-label="${esc(p.n)}, ${label(w)}: ${txt==="—"?"not marked":txt}">${txt}</button></td>`; });
+    h+=`<td class="score">${n?s.free+(s.maybe?` <span class="muted small">+${s.maybe}?</span>`:"")+` / ${n}`:"—"}</td></tr>`;
+  });
+  h+="</tbody>";
+  $("#wkTable").innerHTML = n ? h : `<tbody><tr><td style="padding:40px 20px;color:var(--ink-2)">Add the people coming on the left, then tap each weekend to mark it.</td></tr></tbody>`;
+  // result
+  const r=$("#result"); const trip=st.t?` for ${esc(st.t)}`:"";
+  if(!n){ r.innerHTML=`<h3>Who's in${trip}?</h3><p>Add at least two friends to start finding your weekend.</p>`; return; }
+  const marked=st.p.filter(p=>Object.keys(p.a).length>0).length;
+  const all=scores.filter(s=>s.free===n);
+  if(all.length){
+    const list=all.slice(0,3).map(s=>label(wks[s.wi])).join(", ");
+    r.innerHTML=`<h3>${n===1?"You're":"All "+n+" of you are"} free ${esc(list)}${all.length>3?" and more":""}.</h3><p>${all.length===1?"That's your weekend"+trip+". Lock it in before someone books a midterm.":"Pick one"+trip+" and lock it in."}</p>`;
+  } else if(bestScore>0){
+    const top=scores.filter(s=>s.score===bestScore).slice(0,2);
+    const s=top[0];
+    r.innerHTML=`<h3>Closest: ${label(wks[s.wi])} — ${s.free} of ${n} free${s.maybe?`, ${s.maybe} maybe`:""}.</h3><p>${marked<n?`${n-marked} ${n-marked===1?"person hasn't":"people haven't"} marked anything yet. Send them the link.`:"Nudge the maybes, or try a longer range."}</p>`;
+  } else {
+    r.innerHTML=`<h3>${marked?"No overlap yet.":"Nobody's marked a weekend yet."}</h3><p>${marked?"Try adding more weekends or a later start date.":"Tap the cells to mark free weekends, then share the link with your crew."}</p>`;
+  }
+}
+$("#addPerson").addEventListener("submit",e=>{ e.preventDefault(); const v=$("#newPerson").value.trim(); if(!v) return;
+  if(st.p.length>=12){ toast("Up to 12 people per trip"); return; }
+  if(st.p.some(p=>p.n.toLowerCase()===v.toLowerCase())){ toast(v+" is already in"); return; }
+  st.p.push({n:v,a:{}}); $("#newPerson").value=""; save(); renderWeekend(); });
+$("#people").addEventListener("click",e=>{ const b=e.target.closest("[data-rm]"); if(!b) return; st.p.splice(+b.dataset.rm,1); save(); renderWeekend(); });
+$("#wkTable").addEventListener("click",e=>{ const b=e.target.closest(".cell"); if(!b) return;
+  const p=st.p[+b.dataset.p]; const wi=b.dataset.w; const order=["","f","m","b"]; const next=order[(order.indexOf(p.a[wi]||"")+1)%4];
+  if(next) p.a[wi]=next; else delete p.a[wi]; save(); renderWeekend();
+  const nb=document.querySelector(`.cell[data-p="${b.dataset.p}"][data-w="${wi}"]`); if(nb) nb.focus(); });
+$("#tripName").addEventListener("input",e=>{ st.t=e.target.value.slice(0,40); save(); renderWeekend(); });
+$("#startDate").addEventListener("change",e=>{ if(!e.target.value) return;
+  if(st.p.some(p=>Object.keys(p.a).length) && !confirm("Changing the start date clears everyone's marks. Continue?")){ e.target.value=st.s; return; }
+  st.s=e.target.value; st.p.forEach(p=>p.a={}); save(); renderWeekend(); });
+weeksSel.addEventListener("change",e=>{ st.w=+e.target.value; st.p.forEach(p=>{ Object.keys(p.a).forEach(k=>{ if(+k>=st.w) delete p.a[k]; }); }); save(); renderWeekend(); });
+$("#shareBtn").addEventListener("click",async()=>{
+  save(); const url=location.origin+location.pathname+"#w="+encode(st);
+  try{ if(navigator.share && matchMedia("(pointer:coarse)").matches){ await navigator.share({title:"linger"+(st.t?" — "+st.t:""),text:"Mark your free weekends:",url}); return; } }catch(e){ if(e && e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(url); toast("Link copied — paste it in the group chat"); }
+  catch(e){ prompt("Copy this link:",url); }
+});
+$("#resetBtn").addEventListener("click",()=>{ if(!confirm("Clear this trip and start over?")) return; st=defaultState(); save(true); history.replaceState(null,"",location.pathname+"#weekend"); renderWeekend(); });
+window.addEventListener("hashchange",()=>{ if(location.hash.startsWith("#w=")){ const d=decode(location.hash.slice(3)); if(d){ st=d; store.set("linger.weekend",st); renderWeekend(); } } });
+renderWeekend();
+if(fromHash){ setTimeout(()=>document.getElementById("weekend").scrollIntoView(),50); }
+
+/* ---------------- CALL HOME ---------------- */
+const ZONES=[
+ ["Copenhagen","Europe/Copenhagen"],["Stockholm","Europe/Stockholm"],["London","Europe/London"],["Dublin","Europe/Dublin"],
+ ["Paris","Europe/Paris"],["Barcelona / Madrid","Europe/Madrid"],["Rome / Florence","Europe/Rome"],["Berlin","Europe/Berlin"],
+ ["Amsterdam","Europe/Amsterdam"],["Prague","Europe/Prague"],["Vienna","Europe/Vienna"],["Lisbon","Europe/Lisbon"],
+ ["Athens","Europe/Athens"],["Istanbul","Europe/Istanbul"],["Cape Town","Africa/Johannesburg"],["Accra","Africa/Accra"],
+ ["Dubai","Asia/Dubai"],["Seoul","Asia/Seoul"],["Tokyo","Asia/Tokyo"],["Shanghai","Asia/Shanghai"],["Singapore","Asia/Singapore"],
+ ["Sydney","Australia/Sydney"],["Buenos Aires","America/Argentina/Buenos_Aires"],["Mexico City","America/Mexico_City"],["São Paulo","America/Sao_Paulo"],
+ ["Los Angeles (Pacific)","America/Los_Angeles"],["Denver (Mountain)","America/Denver"],["Phoenix","America/Phoenix"],
+ ["Chicago (Central)","America/Chicago"],["New York (Eastern)","America/New_York"],["Honolulu","Pacific/Honolulu"],["Anchorage","America/Anchorage"],["San Juan","America/Puerto_Rico"]
+];
+function fillZones(sel,val){ ZONES.forEach(([n,z])=>{ const o=document.createElement("option"); o.value=z; o.textContent=n; sel.appendChild(o); }); sel.value=val; }
+let guess="America/Los_Angeles"; try{ guess=Intl.DateTimeFormat().resolvedOptions().timeZone||guess; }catch(e){}
+const ch=store.get("linger.callhome",null);
+const hereDefault = ch?ch.here:(ZONES.some(z=>z[1]===guess)&&!guess.startsWith("America")?guess:"Europe/Copenhagen");
+const homeDefault = ch?ch.home:(ZONES.some(z=>z[1]===guess)&&guess.startsWith("America")?guess:"America/Los_Angeles");
+fillZones($("#tzHere"),hereDefault); fillZones($("#tzHome"),homeDefault);
+function hourIn(tz,d){ return +new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"numeric",hourCycle:"h23"}).format(d); }
+function fmtTime(tz,d){ return new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit"}).format(d); }
+function fmtDay(tz,d){ return new Intl.DateTimeFormat("en-US",{timeZone:tz,weekday:"long",month:"short",day:"numeric"}).format(d); }
+function fmtHour(h){ return h===0?"12a":h<12?h+"a":h===12?"12p":(h-12)+"p"; }
+const awake=h=>h>=8&&h<23;
+function renderClock(){
+  const here=$("#tzHere").value, home=$("#tzHome").value; store.set("linger.callhome",{here,home});
+  const now=new Date();
+  $("#timeHere").textContent=fmtTime(here,now); $("#dayHere").textContent=fmtDay(here,now);
+  $("#timeHome").textContent=fmtTime(home,now); $("#dayHome").textContent=fmtDay(home,now);
+  const base=new Date(now); base.setMinutes(0,0,0);
+  let cells="",labels="",okHours=[],firstOk=null;
+  for(let k=0;k<24;k++){
+    const t=new Date(base.getTime()+k*3600000); const hh=hourIn(here,t), hm=hourIn(home,t); const ok=awake(hh)&&awake(hm);
+    if(ok){ okHours.push(t); if(firstOk===null) firstOk=k; }
+    cells+=`<div class="hr${ok?" ok":""}${k===0?" now":""}" title="${fmtHour(hh)} here · ${fmtHour(hm)} home"></div>`;
+    labels+=`<span>${fmtHour(hh)}</span>`;
+  }
+  $("#hours").innerHTML=cells; $("#hoursLabels").innerHTML=labels;
+  let verdict;
+  if(!okHours.length) verdict="No easy overlap today — try a weekend morning.";
+  else if(firstOk===0) verdict=`Good time to call now — it's ${fmtTime(home,now)} at home.`;
+  else verdict=`Next good window: ${fmtTime(here,okHours[0])} your time (${fmtTime(home,okHours[0])} at home).`;
+  $("#callVerdict").textContent=verdict;
+  $("#hours").setAttribute("aria-label",okHours.length+" of the next 24 hours work for both of you. "+verdict);
+}
+$("#tzHere").addEventListener("change",renderClock); $("#tzHome").addEventListener("change",renderClock);
+renderClock(); setInterval(renderClock,30000);
+
+/* ---------------- SCHOLARSHIPS ---------------- */
+const SCH=[
+ {id:"cls",name:"Critical Language Scholarship",url:"https://clscholarship.org/",award:"Fully funded summer language program",detail:"Travel, tuition, room and board",deadline:"2026-11-17",dtext:"Nov 17, 2026 (summer 2027)",who:"US citizens in a degree program studying a critical-need language",tags:["abroad","lang"]},
+ {id:"boren",name:"Boren Scholarship",url:"https://www.borenawards.org/",award:"$8,000–$25,000",detail:"$12,500 for a semester; $25,000 for a year",deadline:"2027-01-27",dtext:"Jan 27, 2027 (campus deadlines earlier)",who:"Undergrads studying less-taught languages outside Western Europe; requires a year of federal service after",tags:["abroad","lang"]},
+ {id:"gilman",name:"Gilman Scholarship",url:"https://www.gilmanscholarship.org/",award:"Up to $5,000",detail:"Extra funding available for critical-need languages",deadline:null,dtext:"Late Feb / early Mar 2027 for summer 2027 onward",status:"tbd",who:"US citizens receiving a Pell Grant",tags:["abroad","need"]},
+ {id:"fea",name:"Fund for Education Abroad",url:"https://www.fundforeducationabroad.org/",award:"$1,250–$10,000",detail:"Summer through full-year awards",deadline:null,dtext:"Summer/Fall 2027 cycle opens late 2026; last cycle closed early Feb",status:"tbd",who:"Undergrads with financial need, especially first-gen and underrepresented students",tags:["abroad","need"]},
+ {id:"freeman",name:"Freeman-ASIA",url:"https://www.iie.org/Programs/Freeman-ASIA/Apply",award:"Up to $7,000",detail:"$3,000 summer · $5,000 semester · $7,000 year",deadline:null,dtext:"Opens Feb 2027; usually due early April",status:"tbd",who:"Undergrads with financial need studying in East or Southeast Asia",tags:["abroad","need"]},
+ {id:"ciee",name:"CIEE scholarships & fellowships",url:"https://www.ciee.org/scholarships",award:"Grants up to $10,000",detail:"CIEE gives over $13M a year",deadline:null,dtext:"Varies by award and term",status:"tbd",who:"Students on CIEE programs; several aimed at first-gen and Pell-eligible students",tags:["abroad","need"]},
+ {id:"ies",name:"IES Abroad aid",url:"https://www.iesabroad.org/scholarships-aid",award:"Varies",detail:"Aid quoted within about 5 business days of a short application",deadline:null,dtext:"Tied to each program's deadline",status:"tbd",who:"Students on IES programs; includes first-gen awards",tags:["abroad","need"]},
+ {id:"horatio",name:"Horatio Alger National Scholarship",url:"https://scholars.horatioalger.org/",award:"$25,000",detail:"105 national awards",deadline:"2027-03-01",dtext:"Opens Dec 1, 2026 · due Mar 1, 2027",who:"High school juniors with financial need who've overcome adversity",tags:["hs","need"]},
+ {id:"elks",name:"Elks Most Valuable Student",url:"https://www.elks.org/scholars/scholarships/mvs.cfm",award:"$4,000–$30,000",detail:"Over four years",deadline:"2026-11-12",dtext:"Nov 12, 2026",who:"High school seniors; judged on scholarship, leadership and need",tags:["hs","need"]},
+ {id:"davidson",name:"Davidson Fellows",url:"https://www.davidsongifted.org/gifted-programs/fellows-scholarship/",award:"$25,000–$100,000",detail:"For a significant project in STEM, literature, music or philosophy",deadline:"2027-02-10",dtext:"About Feb 10, 2027",who:"Students 18 and under with a major original project",tags:["hs"]}
+];
+let filter="all";
+let saved=store.get("linger.saved",[]);
+function daysUntil(isoDate){ const d=parseISO(isoDate); const t=new Date(); t.setHours(0,0,0,0); return Math.round((d-t)/86400000); }
+function badge(s){
+  if(!s.deadline) return `<span class="badge tbd">Date TBA</span>`;
+  const n=daysUntil(s.deadline);
+  if(n<0) return `<span class="badge closed">Closed</span>`;
+  if(n===0) return `<span class="badge soon">Due today</span>`;
+  if(n<=30) return `<span class="badge soon">${n} day${n===1?"":"s"} left</span>`;
+  return `<span class="badge open">${n} days left</span>`;
+}
+function renderSch(){
+  $("#savedCount").textContent=saved.length;
+  let list=SCH.filter(s=> filter==="all" || (filter==="saved"?saved.includes(s.id):s.tags.includes(filter)));
+  list.sort((a,b)=>{ const da=a.deadline&&daysUntil(a.deadline)>=0?daysUntil(a.deadline):9999, db=b.deadline&&daysUntil(b.deadline)>=0?daysUntil(b.deadline):9999; return da-db; });
+  $("#schList").innerHTML = list.length ? list.map(s=>{ const on=saved.includes(s.id); return `
+    <article class="card sch">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:start">${badge(s)}<span class="muted small">${s.tags.includes("hs")?"Before college":"Study abroad"}</span></div>
+      <h3>${esc(s.name)}</h3>
+      <div><div class="award">${esc(s.award)}</div><p class="meta">${esc(s.detail)}</p></div>
+      <p class="meta"><b style="color:var(--ink)">Deadline:</b> ${esc(s.dtext)}</p>
+      <p class="meta"><b style="color:var(--ink)">For:</b> ${esc(s.who)}</p>
+      <div class="foot">
+        <a href="${s.url}" target="_blank" rel="noopener">Official site ↗</a>
+        <button class="save" type="button" data-save="${s.id}" aria-pressed="${on}">${on?"✓ Saved":"Save"}</button>
+      </div>
+    </article>`; }).join("")
+    : `<div class="card muted">${filter==="saved"?"Nothing saved yet. Tap Save on any scholarship to keep it here.":"Nothing here yet."}</div>`;
+}
+document.querySelector(".filters").addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return; filter=b.dataset.f;
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c===b))); renderSch(); });
+$("#schList").addEventListener("click",e=>{ const b=e.target.closest("[data-save]"); if(!b) return; const id=b.dataset.save;
+  saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id]; store.set("linger.saved",saved); renderSch();
+  const nb=document.querySelector(`[data-save="${id}"]`); if(nb) nb.focus(); });
+renderSch();
+})();
+</script>
+</body>
+</html>
