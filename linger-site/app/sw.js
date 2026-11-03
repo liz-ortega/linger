@@ -1,5 +1,5 @@
 /* Offline shell for the Linger app: network first, cached copy when offline. */
-var CACHE = "linger-app-v2";
+var CACHE = "linger-app-v3";
 var SHELL = ["/app", "/app/app.css", "/app/app.js", "/app/config.js", "/favicon.svg",
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"];
 

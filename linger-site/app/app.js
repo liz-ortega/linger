@@ -21,6 +21,7 @@ var CURRENCIES = ["EUR", "USD", "DKK", "SEK", "NOK", "GBP", "CHF", "CZK", "HUF",
 var TABS = [["plan", "Plan"], ["inspo", "Inspo"], ["links", "Links"], ["when", "When"], ["split", "Split"]];
 var ICONS = {
   trips: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  map: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
   home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>',
   prep: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>',
   profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'
@@ -119,6 +120,13 @@ async function route() {
     return render();
   }
   unsubscribeTrip();
+  if (p[0] === "map") {
+    S.view = "map"; if (p[1]) ML.planTrip = p[1];
+    if (!S.trips) S.trips = lsGet("linger.trips." + uid(), null);
+    render();
+    await Promise.all([S.trips && S.trips.length ? null : loadTrips(), loadMapData()]);
+    return render();
+  }
   if (p[0] === "home") { S.view = "home"; if (!S.contacts) { render(); await loadContacts(); } return render(); }
   if (p[0] === "prep") { S.view = "prep"; return render(); }
   if (p[0] === "profile") { S.view = "profile"; return render(); }
@@ -270,15 +278,17 @@ function render() {
   Object.keys(keep).forEach(function (id) { var el = document.getElementById(id); if (el && !el.value && keep[id]) el.value = keep[id]; });
   if (focusId) { var f = document.getElementById(focusId); if (f) { try { f.focus({ preventScroll: true }); } catch (e) {} } }
   document.title = titleFor();
+  if (S.view === "map") mountMap(); else if (ML.el && ML.el.parentNode) ML.el.parentNode.removeChild(ML.el);
 }
 function titleFor() {
   if (S.view === "trip" && S.t) return S.t.trip.name + " | linger";
-  return { trips: "Trips", home: "Home", prep: "Prep", profile: "Profile" }[S.view] ? ({ trips: "Trips", home: "Home", prep: "Prep", profile: "Profile" }[S.view] + " | linger") : "linger";
+  var T = { trips: "Trips", map: "Map", home: "Home", prep: "Prep", profile: "Profile" }; return T[S.view] ? T[S.view] + " | linger" : "linger";
 }
 function viewBody() {
   switch (S.view) {
     case "trips": return viewTrips();
     case "trip": return viewTrip();
+    case "map": return viewMap();
     case "home": return viewHome();
     case "prep": return viewPrep();
     case "profile": return viewProfile();
@@ -287,7 +297,7 @@ function viewBody() {
 }
 function shell(body) {
   var cur = S.view === "trip" ? "trips" : S.view;
-  var nav = [["trips", "#/trips", "Trips"], ["home", "#/home", "Home"], ["prep", "#/prep", "Prep"], ["profile", "#/profile", "Profile"]];
+  var nav = [["trips", "#/trips", "Trips"], ["map", "#/map", "Map"], ["home", "#/home", "Home"], ["prep", "#/prep", "Prep"], ["profile", "#/profile", "Profile"]];
   return '<div class="shell">' +
     '<aside class="side"><a class="wordmark" href="/" title="linger website">linge<span class="r">r</span></a>' +
       nav.map(function (n) { return '<a class="nav-btn" href="' + n[1] + '"' + (cur === n[0] ? ' aria-current="page"' : "") + ">" + ICONS[n[0]] + n[2] + "</a>"; }).join("") +
@@ -364,7 +374,7 @@ function viewTrip() {
   var t = D.trip, opt = lockedOpt();
   var tabs = '<nav class="tabs" aria-label="Trip sections">' + TABS.map(function (x) { return '<a href="#/trip/' + t.id + "/" + x[0] + '"' + (S.tab === x[0] ? ' aria-current="page"' : "") + ">" + x[1] + "</a>"; }).join("") + "</nav>";
   var hero = '<div class="hero" style="background:' + cover(t.cover) + ';text-shadow:0 1px 8px rgba(0,0,0,.22)">' +
-    '<div class="top"><a class="back" href="#/trips">‹ All trips</a><div class="wrap-row"><button class="btn ghost small" data-act="invite" type="button" style="text-shadow:none">Invite</button><button class="btn ghost small" data-act="tripSettings" type="button" style="text-shadow:none" aria-label="Trip settings">•••</button></div></div>' +
+    '<div class="top"><a class="back" href="#/trips">‹ All trips</a><div class="wrap-row"><a class="btn ghost small" href="#/map/' + t.id + '" style="text-shadow:none">Map</a><button class="btn ghost small" data-act="invite" type="button" style="text-shadow:none">Invite</button><button class="btn ghost small" data-act="tripSettings" type="button" style="text-shadow:none" aria-label="Trip settings">•••</button></div></div>' +
     "<h1>" + esc(t.name) + '</h1><div class="sub">' + esc(t.place || "") + (t.place ? " · " : "") + (opt ? rangeLabel(opt.start_date, opt.end_date) : "Dates not set") + "</div>" +
     '<div class="row">' + avs(D.members, 32) + '<span class="small" style="opacity:.95">' + D.members.length + (D.members.length === 1 ? " person" : " people") + "</span></div></div>";
   var body = { plan: tabPlan, inspo: tabInspo, links: tabLinks, when: tabWhen, split: tabSplit }[S.tab]();
@@ -569,6 +579,173 @@ function tabSplit() {
     '<fieldset class="field" style="border:0;padding:0;margin:0 0 14px"><legend class="f" style="font-weight:600;font-size:13px;margin-bottom:6px">Split between</legend><div class="checks">' + D.members.map(function (u) { return '<label><input type="checkbox" name="split" value="' + u + '" checked> ' + esc(nameOf(u)) + "</label>"; }).join("") + "</div></fieldset>" +
     '<button class="btn" type="submit" style="width:100%">Add cost</button></form>';
   return '<div class="cols"><div><div class="card block"><h2>Settle up</h2>' + settleHtml + '</div><div class="card block" style="margin-top:16px"><h2>Trip costs</h2>' + list + "</div></div>" + form + "</div>";
+}
+
+
+/* ---------- Map ---------- */
+var ML = { map: null, el: null, markers: [], loading: null, data: null, sel: null, results: null, planTrip: null, home: null, focus: null };
+var MAPLIBRE = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl";
+var KINDS = { museum: "Museum", gallery: "Gallery", attraction: "Sight", viewpoint: "Viewpoint", castle: "Castle", monument: "Monument", memorial: "Memorial", church: "Church", cathedral: "Cathedral", park: "Park", garden: "Garden", cafe: "Café", restaurant: "Restaurant", bar: "Bar", pub: "Pub", bakery: "Bakery", station: "Station", train_station: "Station", halt: "Station", bus_station: "Bus station", aerodrome: "Airport", city: "City", town: "Town", village: "Village", hostel: "Hostel", hotel: "Hotel", beach: "Beach", market: "Market", marketplace: "Market", theatre: "Theatre", zoo: "Zoo", library: "Library", university: "University" };
+function loadMapLib() {
+  if (window.maplibregl) return Promise.resolve();
+  if (ML.loading) return ML.loading;
+  ML.loading = new Promise(function (res, rej) {
+    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = MAPLIBRE + ".css"; document.head.appendChild(l);
+    var sc = document.createElement("script"); sc.src = MAPLIBRE + ".js"; sc.onload = res;
+    sc.onerror = function () { ML.loading = null; rej(new Error("The map couldn't load. Check your connection.")); };
+    document.head.appendChild(sc);
+  });
+  return ML.loading;
+}
+async function loadMapData() {
+  try {
+    var r = await Promise.all([
+      sb.from("spots").select("id,trip_id,name,lat,lng,address,position,locked,created_at,hours,cost").order("position").order("created_at"),
+      sb.from("votes").select("spot_id,user_id,trip_id"),
+      sb.from("trip_members").select("trip_id,user_id")
+    ]);
+    var d = r.map(must);
+    ML.data = { spots: d[0], votes: d[1], members: d[2] };
+    lsSet("linger.map." + uid(), ML.data);
+  } catch (e) { ML.data = ML.data || lsGet("linger.map." + uid(), { spots: [], votes: [], members: [] }); if (navigator.onLine) toast(errMsg(e)); }
+}
+function tripById(id) { return (S.trips || []).find(function (t) { return t.id === id; }); }
+function tripColor(t) { var m = cover(t ? t.cover : 0).match(/#[0-9A-Fa-f]{6}/g); return m ? m[m.length - 1] : "#1B2340"; }
+function mapOrder(tripId) {
+  var D = ML.data; if (!D) return { list: [], other: [] };
+  var n = D.members.filter(function (m) { return m.trip_id === tripId; }).length || 1, need_ = Math.floor(n / 2) + 1;
+  var spots = D.spots.filter(function (s) { return s.trip_id === tripId; });
+  var votes = function (id) { return D.votes.filter(function (v) { return v.spot_id === id; }).length; };
+  var list = spots.filter(function (s) { return votes(s.id) >= need_; }).sort(function (a, b) { return (a.position - b.position) || (a.created_at < b.created_at ? -1 : 1); });
+  var other = spots.filter(function (s) { return list.indexOf(s) < 0; });
+  return { list: list, other: other };
+}
+function km(a, b) { var R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r; var h = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.pow(Math.sin(dLng / 2), 2); return 2 * R * Math.asin(Math.sqrt(h)); }
+function walkText(d) { if (d < 0.15) return "next door"; var min = Math.max(1, Math.round(d / 4.8 * 60)); return d.toFixed(1) + " km · " + (min > 90 ? "transit or a ride" : "about " + min + " min walk"); }
+function hasLL(s) { return typeof s.lat === "number" && typeof s.lng === "number"; }
+async function geocode(q, bias, limit) {
+  var u = "https://photon.komoot.io/api/?q=" + encodeURIComponent(q) + "&limit=" + (limit || 7) + "&lang=en";
+  if (bias) u += "&lat=" + bias.lat.toFixed(4) + "&lon=" + bias.lng.toFixed(4);
+  var res = await fetch(u);
+  if (!res.ok) throw new Error("Search isn't working right now. Try again in a minute.");
+  var j = await res.json();
+  return (j.features || []).map(function (f) {
+    var p = f.properties || {}, c = f.geometry.coordinates;
+    var where = [p.city && p.city !== p.name ? p.city : "", p.state && !p.city ? p.state : "", p.country].filter(Boolean).join(", ");
+    return { name: p.name || p.street || q, lat: c[1], lng: c[0], kind: KINDS[p.osm_value] || (p.osm_value ? p.osm_value.replace(/_/g, " ") : "Place"), where: where, address: [p.street ? (p.street + (p.housenumber ? " " + p.housenumber : "")) : "", p.city].filter(Boolean).join(", ") };
+  });
+}
+async function homeLL() {
+  var hb = (S.profile.home_base || "").trim(); if (!hb) return null;
+  if (ML.home && ML.home.q === hb) return ML.home;
+  var cache = lsGet("linger.homeLL", null);
+  if (cache && cache.q === hb) return (ML.home = cache);
+  try { var r = await geocode(hb, null, 1); if (r[0]) { ML.home = { q: hb, lat: r[0].lat, lng: r[0].lng, name: hb }; lsSet("linger.homeLL", ML.home); return ML.home; } } catch (e) {}
+  return null;
+}
+async function mountMap() {
+  var host = document.getElementById("mapHost"); if (!host) return;
+  if (!ML.el) { ML.el = document.createElement("div"); ML.el.style.cssText = "width:100%;height:100%"; }
+  host.appendChild(ML.el);
+  try { await loadMapLib(); } catch (e) { host.innerHTML = '<div class="empty" style="margin:16px">' + esc(e.message) + "</div>"; return; }
+  if (!ML.map) {
+    ML.map = new maplibregl.Map({ container: ML.el, style: "https://tiles.openfreemap.org/styles/liberty", center: [10, 50], zoom: 3.3, attributionControl: { compact: true } });
+    ML.map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    ML.map.addControl(new maplibregl.GeolocateControl({ trackUserLocation: false }), "top-right");
+    ML.fitted = false;
+  } else { ML.map.resize(); }
+  drawMarkers();
+  if (!ML.fitted && ML.data) { ML.fitted = true; fitMap(); }
+}
+function mk(cls, color, text, title) {
+  var el = document.createElement("button"); el.type = "button"; el.className = "mk " + cls; el.title = title; el.setAttribute("aria-label", title);
+  if (color) el.style.background = color; el.textContent = text || "";
+  return el;
+}
+function drawMarkers() {
+  if (!ML.map || !ML.data) return;
+  ML.markers.forEach(function (m) { m.remove(); }); ML.markers = [];
+  var plan = ML.planTrip;
+  ML.data.spots.filter(hasLL).forEach(function (s) {
+    var t = tripById(s.trip_id); if (!t) return;
+    var order = mapOrder(s.trip_id), idx = order.list.indexOf(s);
+    var faded = plan && plan !== s.trip_id;
+    var el = mk(idx >= 0 ? "num" : "dot" + (faded ? " faded" : ""), tripColor(t), idx >= 0 && !faded ? String(idx + 1) : "", s.name + " · " + t.name);
+    if (faded && idx >= 0) el.className = "mk dot faded";
+    el.addEventListener("click", function (ev) { ev.stopPropagation(); ML.sel = null; ML.focus = s.id; ML.planTrip = s.trip_id; render(); });
+    ML.markers.push(new maplibregl.Marker({ element: el }).setLngLat([s.lng, s.lat]).addTo(ML.map));
+  });
+  if (ML.home) ML.markers.push(new maplibregl.Marker({ element: mk("home", null, "⌂", "Home base: " + ML.home.name) }).setLngLat([ML.home.lng, ML.home.lat]).addTo(ML.map));
+  if (ML.sel) ML.markers.push(new maplibregl.Marker({ element: mk("sel", null, "", ML.sel.name) }).setLngLat([ML.sel.lng, ML.sel.lat]).addTo(ML.map));
+}
+async function fitMap() {
+  if (!ML.map) return;
+  var pts = ML.data.spots.filter(hasLL).filter(function (s) { return !ML.planTrip || s.trip_id === ML.planTrip; });
+  if (!pts.length) {
+    var t = tripById(ML.planTrip);
+    if (t && t.place) { try { var r = await geocode(t.place, null, 1); if (r[0]) return ML.map.flyTo({ center: [r[0].lng, r[0].lat], zoom: 12 }); } catch (e) {} }
+    var h = await homeLL(); drawMarkers();
+    if (h) return ML.map.flyTo({ center: [h.lng, h.lat], zoom: 5 });
+    return;
+  }
+  if (pts.length === 1) return ML.map.flyTo({ center: [pts[0].lng, pts[0].lat], zoom: 14 });
+  var b = new maplibregl.LngLatBounds();
+  pts.forEach(function (p) { b.extend([p.lng, p.lat]); });
+  ML.map.fitBounds(b, { padding: 60, maxZoom: 15, duration: 600 });
+}
+function viewMap() {
+  var trips = S.trips || [], D = ML.data;
+  if (!ML.home && S.profile.home_base) homeLL().then(function (h) { if (h) drawMarkers(); });
+  var plan = ML.planTrip && tripById(ML.planTrip) ? ML.planTrip : "";
+  var side = "";
+  // search
+  side += '<form class="card" data-form="mapSearch" style="margin-bottom:12px"><label class="f" for="mapQ">Search any city or place</label><div class="row"><input id="mapQ" type="text" placeholder="e.g. Lisbon, or Tivoli Gardens" autocomplete="off"><button class="btn small" type="submit">Search</button></div>' +
+    (ML.results ? (ML.results.length ? '<div style="margin-top:8px">' + ML.results.map(function (r, i) { return '<button type="button" class="res" data-act="mapPick" data-i="' + i + '"><b>' + esc(r.name) + '</b><span>' + esc(r.kind) + (r.where ? " · " + esc(r.where) : "") + "</span></button>"; }).join("") + "</div>" : '<p class="muted small" style="margin:8px 0 0">Nothing found. Try the nearest larger city, or add the city name.</p>') : "") + "</form>";
+  // selected place
+  if (ML.sel) {
+    side += '<div class="card" style="margin-bottom:12px"><div class="eyebrow">' + esc(ML.sel.kind) + '</div><h3 style="font-size:22px;margin:4px 0">' + esc(ML.sel.name) + '</h3><p class="muted small" style="margin:0 0 10px">' + esc(ML.sel.where || ML.sel.address || "") + "</p>" +
+      (trips.length ? '<form data-form="mapSave"><label class="f" for="mapSaveTrip">Trip to add it to</label><div class="row"><select id="mapSaveTrip" data-nokeep>' + trips.map(function (t) { return '<option value="' + t.id + '"' + (t.id === plan ? " selected" : "") + ">" + esc(t.name) + "</option>"; }).join("") + '</select><button class="btn small" type="submit">Save</button></div><p class="muted small" style="margin:6px 0 0">It lands in the trip\'s Vote list.</p></form>'
+        : '<p class="muted small">Make a trip first, then save places to it.</p><button class="btn small" data-act="newTrip" type="button">+ New trip</button>') +
+      '<div class="wrap-row" style="margin-top:10px"><a class="btn ghost tiny" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' + ML.sel.lat + "%2C" + ML.sel.lng + '">Google Maps ↗</a><button class="btn ghost tiny" data-act="mapClear" type="button">Close</button></div></div>';
+  }
+  // plan the day
+  var withSpots = trips.filter(function (t) { return D && D.spots.some(function (s) { return s.trip_id === t.id; }); });
+  side += '<div class="card"><h3 style="font-size:22px">Plan the day</h3><p class="muted small" style="margin:2px 0 10px">The list for a trip, in order, with walking times between stops.</p>';
+  if (!D) side += '<div class="spinner"></div>';
+  else if (!trips.length) side += '<p class="muted">No trips yet. Make one, then save places here.</p>';
+  else {
+    side += '<label class="f" for="mapTrip">Trip</label><select id="mapTrip" data-change="mapTrip" data-nokeep><option value="">All trips</option>' + trips.map(function (t) { return '<option value="' + t.id + '"' + (t.id === plan ? " selected" : "") + ">" + esc(t.name) + (withSpots.indexOf(t) < 0 ? " (no spots yet)" : "") + "</option>"; }).join("") + "</select>";
+    if (plan) {
+      var o = mapOrder(plan), t = tripById(plan), prev = null, total = 0, html = "";
+      o.list.forEach(function (s, i) {
+        var leg = prev && hasLL(prev) && hasLL(s) ? km(prev, s) : null; if (leg != null) total += leg;
+        html += (leg != null ? '<div class="leg">↓ ' + walkText(leg) + "</div>" : "") +
+          '<button type="button" class="stop' + (ML.focus === s.id ? " on" : "") + '" data-act="mapFocus" data-id="' + s.id + '"><span class="num" style="background:' + tripColor(t) + ';color:#fff">' + (i + 1) + '</span><span style="flex:1;text-align:left"><b>' + esc(s.name) + "</b>" + (s.locked ? ' <span class="lock">Locked</span>' : "") + '<span class="muted small" style="display:block">' + esc([s.hours, s.cost].filter(Boolean).join(" · ") || (hasLL(s) ? "" : "Not on the map yet")) + "</span></span></button>";
+        if (hasLL(s)) prev = s;
+      });
+      side += '<div style="margin-top:12px">' + (html || '<p class="muted small">Nothing on this trip\'s list yet. Spots join the list when most of the crew votes for them.</p>') + "</div>";
+      var pts = o.list.filter(hasLL);
+      if (pts.length >= 2) {
+        var ll = function (p) { return p.lat.toFixed(6) + "%2C" + p.lng.toFixed(6); };
+        var url = "https://www.google.com/maps/dir/?api=1&travelmode=walking&origin=" + ll(pts[0]) + "&destination=" + ll(pts[pts.length - 1]) + (pts.length > 2 ? "&waypoints=" + pts.slice(1, -1).slice(0, 8).map(ll).join("%7C") : "");
+        side += (total >= 0.1 ? '<p class="small" style="margin:10px 0 0"><b>About ' + total.toFixed(1) + " km</b> of walking in all.</p>" : "") + '<a class="btn small" style="margin-top:8px" target="_blank" rel="noopener" href="' + url + '">Turn-by-turn walking directions ↗</a>';
+      }
+      if (o.other.length) side += '<p class="muted small" style="margin:14px 0 4px">Still being voted on: ' + o.other.map(function (s) { return esc(s.name); }).join(", ") + "</p>";
+      var missing = o.list.concat(o.other).filter(function (s) { return !hasLL(s); });
+      if (missing.length) side += '<button class="btn ghost small" data-act="mapPlace" type="button" style="margin-top:10px">Put ' + missing.length + (missing.length === 1 ? " spot" : " spots") + " on the map</button>";
+      side += '<div style="margin-top:12px"><a href="#/trip/' + plan + '/plan" class="small">Open ' + esc(t.name) + " ›</a></div>";
+    } else {
+      side += '<p class="muted small" style="margin:10px 0 0">Pick a trip to see its stops in order. Numbers on the map are each trip\'s list; dots are spots still being voted on.</p>';
+    }
+  }
+  side += "</div>";
+  return '<div class="page-head"><div><div class="eyebrow">Map</div><h1>Where to, and what first.</h1></div></div><div class="map-grid"><div class="map-host" id="mapHost"></div><div class="map-side">' + side + "</div></div>";
+}
+async function mapAfterChange(tripId) {
+  await loadMapData();
+  if (S.t && S.t.trip.id === tripId) { S.tripId = null; }
+  S.trips = null; loadTrips().then(function () { render(); });
+  render();
 }
 
 /* ---------- Home ---------- */
@@ -781,6 +958,29 @@ app.addEventListener("click", async function (e) {
     case "copyInvite": { var o = lockedOpt(); return copy("You're invited: " + D.trip.name + (D.trip.place ? " in " + D.trip.place : "") + ", " + rangeLabel(o.start_date, o.end_date) + ". RSVP in Linger: " + inviteUrl(D.trip), "Invite copied"); }
     case "delCost": if (!confirm("Delete this cost?")) return; return act(async function () { must(await sb.from("costs").delete().eq("id", id)); });
     case "delContact": try { must(await sb.from("contacts").delete().eq("id", id)); S.contacts = S.contacts.filter(function (c) { return c.id !== id; }); render(); } catch (e3) { toast(errMsg(e3)); } return;
+    case "mapPick": { var r = ML.results[+b.dataset.i]; ML.sel = r; ML.focus = null; render(); if (ML.map) ML.map.flyTo({ center: [r.lng, r.lat], zoom: /City|Town|Village/.test(r.kind) ? 12 : 15 }); return; }
+    case "mapClear": ML.sel = null; return render();
+    case "mapFocus": {
+      ML.focus = id; render();
+      var sp0 = ML.data.spots.find(function (s) { return s.id === id; });
+      if (sp0 && hasLL(sp0) && ML.map) ML.map.flyTo({ center: [sp0.lng, sp0.lat], zoom: 15 });
+      else if (sp0) toast("Not on the map yet. Tap Put spots on the map.");
+      return;
+    }
+    case "mapPlace": {
+      var tp = tripById(ML.planTrip), o2 = mapOrder(ML.planTrip), miss = o2.list.concat(o2.other).filter(function (s) { return !hasLL(s); }), placed = 0;
+      b.disabled = true; toast("Finding " + miss.length + " on the map…");
+      var bias = null; try { if (tp && tp.place) { var g = await geocode(tp.place, null, 1); if (g[0]) bias = g[0]; } } catch (e4) {}
+      for (var mi = 0; mi < miss.length; mi++) {
+        try {
+          var hit = (await geocode(miss[mi].name + (tp && tp.place ? " " + tp.place : ""), bias, 1))[0];
+          if (hit && (!bias || km(hit, bias) < 80)) { must(await sb.from("spots").update({ lat: hit.lat, lng: hit.lng, address: hit.address || "" }).eq("id", miss[mi].id)); placed++; }
+        } catch (e5) {}
+        await new Promise(function (r) { setTimeout(r, 350); });
+      }
+      toast(placed === miss.length ? "All on the map" : "Placed " + placed + " of " + miss.length + ". Search for the rest and save them.");
+      await mapAfterChange(ML.planTrip); fitMap(); return;
+    }
     case "prepTab": S.prepTab = b.dataset.k; return render();
     case "prepRm": { e.preventDefault(); var ps = prepState(), k = S.prepTab; if (id.indexOf("u") === 0) ps.added[k] = (ps.added[k] || []).filter(function (x) { return x.id !== id; }); else ps.gone[id] = 1; delete ps.checks[id]; savePrep(); return render(); }
     case "prepReset": {
@@ -796,6 +996,7 @@ app.addEventListener("click", async function (e) {
 
 app.addEventListener("change", async function (e) {
   var el = e.target, c = el.dataset.change; if (!c) return;
+  if (c === "mapTrip") { ML.planTrip = el.value || null; ML.focus = null; ML.sel = null; render(); fitMap(); return; }
   if (c === "prepCheck") { var p = prepState(); if (el.checked) p.checks[el.dataset.id] = 1; else delete p.checks[el.dataset.id]; savePrep(); return render(); }
   if (c === "upload") {
     var file = el.files && el.files[0]; el.value = "";
@@ -877,6 +1078,20 @@ app.addEventListener("submit", async function (e) {
         var c = must(await sb.from("contacts").insert({ name: cn, tz: tz, phone: ph }).select().single());
         S.contacts = (S.contacts || []).concat([c]); clear(); render();
         break;
+      }
+      case "mapSearch": {
+        var q = val(f, "mapQ"); if (!q) break;
+        var c0 = ML.map ? ML.map.getCenter() : null;
+        ML.results = await geocode(q, c0 && ML.map.getZoom() > 4 ? { lat: c0.lat, lng: c0.lng } : null, 7);
+        render(); break;
+      }
+      case "mapSave": {
+        var tid = val(f, "mapSaveTrip"), se = ML.sel; if (!tid || !se) break;
+        must(await sb.from("spots").insert({ trip_id: tid, name: se.name.slice(0, 80), lat: se.lat, lng: se.lng, address: se.address || "" }));
+        ML.sel = null; ML.results = null; ML.planTrip = tid;
+        var mq = document.getElementById("mapQ"); if (mq) mq.value = "";
+        toast(se.name + " saved to " + (tripById(tid) || {}).name + ". It's in the Vote list.");
+        await mapAfterChange(tid); break;
       }
       case "prepAdd": { var t = val(f, "prepNew"); if (!t) break; var ps = prepState(); (ps.added[S.prepTab] = ps.added[S.prepTab] || []).push({ id: "u" + Date.now().toString(36), text: t.slice(0, 80) }); clear(); savePrep(); render(); break; }
     }

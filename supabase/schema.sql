@@ -261,3 +261,8 @@ create policy "inspo upload by crew" on storage.objects for insert to authentica
 drop policy if exists "inspo delete own" on storage.objects;
 create policy "inspo delete own" on storage.objects for delete to authenticated
   using (bucket_id = 'inspo' and owner = auth.uid());
+
+-- ---------- Map: where each spot is ----------
+alter table public.spots add column if not exists lat double precision;
+alter table public.spots add column if not exists lng double precision;
+alter table public.spots add column if not exists address text not null default '';
