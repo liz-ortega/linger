@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What to pack | linger</title>
+<meta name="description" content="A packing checklist for a semester abroad and for weekend trips. Tick things off as you go.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<div class="hero sub">
+  <div class="wrap">
+    <div class="eyebrow">What to pack</div>
+    <h1>Pack once, pack right.</h1>
+    <p class="lede">Check things off as you go; your list stays on this device. Add anything that's yours, and skip what you don't need. Check your airline's bag limits before you start.</p>
+  </div>
+</div>
+<section>
+  <div class="wrap">
+    <div class="pack-tabs" role="tablist" aria-label="Lists" id="packTabs"></div>
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+        <h2 style="font-size:24px" id="packTitle"></h2><span class="muted small" id="packCount"></span>
+      </div>
+      <div class="progress" aria-hidden="true"><i id="packBar" style="width:0"></i></div>
+    </div>
+    <div class="pack-cols" id="packList"></div>
+    <div class="card" style="margin-top:8px">
+      <form class="row" id="addItem" style="flex-wrap:wrap">
+        <label class="sr" for="newItem">Add your own item</label>
+        <input id="newItem" type="text" placeholder="Add your own item" maxlength="80" style="flex:1;min-width:200px">
+        <button class="btn small" type="submit">Add</button>
+        <button class="btn ghost small" type="button" id="resetList">Reset this list</button>
+      </form>
+    </div>
+  </div>
+</section>
+<section class="alt">
+  <div class="wrap">
+    <div class="grid two">
+      <div class="card step"><h3>Leave at home</h3><ul><li>Bedding, towels and kitchen stuff, if your housing provides them</li><li>Bulk toiletries and school supplies: buy them there</li><li>Hangers</li><li>Anything valuable you can't replace</li></ul></div>
+      <div class="card step"><h3>Buy when you get there</h3><ul><li>Hair dryer, straightener or curling iron: US ones can blow a fuse, even with a converter</li><li>Your go-to cold remedies, if you couldn't bring them (find the pharmacy in week one)</li><li>A local SIM or eSIM, if your plan doesn't cover it</li></ul></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer id="site-footer"></footer>
+<script src="/assets/site.js"></script>
+<script>
+(function(){
+"use strict";
+var L=window.Linger, $=function(s){return document.querySelector(s);};
+var LISTS={
+  big:{label:"Big bag",groups:[
+    {name:"Documents",items:["Passport, plus a copy of the photo page","Visa or residence permit papers, if you need them","Printed flight itinerary (one for you, one for family)","Printed housing address abroad","Student ID from your home school","Health insurance card and policy info"]},
+    {name:"Clothes",items:["Layers you can mix and match","A warm coat, if it'll be cold","Rain jacket (a must if you'll bike)","Hat, scarf and gloves","Comfortable shoes for cobblestones and lots of walking","Something nicer for an internship or dinner out","Swimsuit"]},
+    {name:"Tech",items:["Laptop and charger","Phone and charger","Plug adapters for every country you'll visit","Small power strip, so one adapter charges everything","Portable battery","Headphones","E-reader or a book for train rides"]},
+    {name:"Health",why:"Know what works for you when you get sick, and bring it.",items:["Prescription medicine, enough for the trip, in original packaging","Your go-to cold and allergy basics","Your comfort remedy (for me: tea and honey)","Glasses or contacts, plus a spare pair","Small first-aid kit"]},
+    {name:"Toiletries",items:["Toothbrush and toothpaste","Your deodorant (many abroad are aerosol)","Skincare or makeup you can't buy there"]},
+    {name:"Bags and extras",items:["Backpack for class and day trips","Small duffel for weekend trips","Water bottle","Umbrella","Sunglasses","Padlock for hostel lockers","Something small from home for your room","Small gift for a host family (optional)"]}
+  ]},
+  carry:{label:"Carry-on",groups:[
+    {name:"Keep these with you",why:"If your checked bag is late, you're still okay.",items:["Passport and documents","Prescription medicine","A change of clothes","Phone, charger and one plug adapter","Portable battery","Laptop","Toothbrush and travel-size toiletries","Some local currency or a card with no foreign fees","Snacks and an empty water bottle"]}
+  ]},
+  weekend:{label:"Weekend bag",groups:[
+    {name:"For a 2–3 night trip",why:"Small enough to carry on a budget flight.",items:["Passport or ID","Residence permit card, if you have one","Phone, charger and plug adapter","Portable battery","Padlock for the hostel locker","Layers and a rain jacket","Comfortable shoes","Medicine","Water bottle","Headphones","Toothbrush and travel-size toiletries"]}
+  ]}
+};
+var st=L.get("linger.packing",{tab:"big",checks:{},added:{},gone:{}});
+["checks","added","gone"].forEach(function(k){ if(!st[k]) st[k]={}; });
+function save(){ L.set("linger.packing",st); }
+function items(k){ var out=[]; LISTS[k].groups.forEach(function(g,gi){ g.items.forEach(function(x,ii){ var id=k+":"+gi+":"+ii; if(!st.gone[id]) out.push(id); }); }); (st.added[k]||[]).forEach(function(x){ out.push(x.id); }); return out; }
+function left(k){ return items(k).filter(function(id){ return !st.checks[id]; }).length; }
+function row(id,text,custom){ var on=!!st.checks[id];
+  return '<label class="check'+(on?" done":"")+'"><input type="checkbox" data-id="'+id+'"'+(on?" checked":"")+'><span style="flex:1">'+L.esc(text)+'</span>'+
+    '<button type="button" class="save" data-rm="'+id+'" aria-label="Remove '+L.esc(text)+'" style="min-height:30px;padding:0 10px">'+(custom?"Delete":"Skip")+'</button></label>'; }
+function render(){
+  if(!LISTS[st.tab]) st.tab="big";
+  $("#packTabs").innerHTML=Object.keys(LISTS).map(function(k){ var n=left(k); return '<button class="chip" role="tab" data-tab="'+k+'" aria-selected="'+(k===st.tab)+'" aria-pressed="'+(k===st.tab)+'">'+LISTS[k].label+' · '+(n?n+" left":"done ✓")+'</button>'; }).join("");
+  var k=st.tab, all=items(k), done=all.length-left(k);
+  $("#packTitle").textContent=LISTS[k].label; $("#packCount").textContent=done+" of "+all.length+" packed";
+  $("#packBar").style.width=(all.length?Math.round(done/all.length*100):0)+"%";
+  var html=LISTS[k].groups.map(function(g,gi){ var rows=g.items.map(function(x,ii){ var id=k+":"+gi+":"+ii; return st.gone[id]?"":row(id,x,false); }).join("");
+    return rows?'<div class="card pack-group"><h3>'+L.esc(g.name)+'</h3>'+(g.why?'<p class="why">'+L.esc(g.why)+'</p>':"")+rows+'</div>':""; }).join("");
+  var mine=(st.added[k]||[]);
+  if(mine.length) html+='<div class="card pack-group"><h3>Your own</h3>'+mine.map(function(x){ return row(x.id,x.text,true); }).join("")+'</div>';
+  $("#packList").innerHTML=html;
+}
+$("#packTabs").addEventListener("click",function(e){ var b=e.target.closest("[data-tab]"); if(!b) return; st.tab=b.dataset.tab; save(); render(); });
+$("#packList").addEventListener("change",function(e){ var id=e.target.dataset.id; if(!id) return; if(e.target.checked) st.checks[id]=1; else delete st.checks[id]; save(); render(); });
+$("#packList").addEventListener("click",function(e){ var b=e.target.closest("[data-rm]"); if(!b) return; e.preventDefault(); var id=b.dataset.rm, k=st.tab;
+  if(id.indexOf("u")===0){ st.added[k]=(st.added[k]||[]).filter(function(x){return x.id!==id;}); } else { st.gone[id]=1; }
+  delete st.checks[id]; save(); render(); });
+$("#addItem").addEventListener("submit",function(e){ e.preventDefault(); var v=$("#newItem").value.trim(); if(!v) return; var k=st.tab;
+  (st.added[k]=st.added[k]||[]).push({id:"u"+Date.now().toString(36),text:v.slice(0,80)}); $("#newItem").value=""; save(); render(); });
+$("#resetList").addEventListener("click",function(){ if(!confirm("Reset the "+LISTS[st.tab].label+" list? This clears your checks and brings back skipped items.")) return; var k=st.tab;
+  Object.keys(st.checks).forEach(function(id){ if(id.indexOf(k+":")===0) delete st.checks[id]; }); (st.added[k]||[]).forEach(function(x){ delete st.checks[x.id]; });
+  Object.keys(st.gone).forEach(function(id){ if(id.indexOf(k+":")===0) delete st.gone[id]; }); st.added[k]=[]; save(); render(); });
+render();
+})();
+</script>
+</body>
+</html>

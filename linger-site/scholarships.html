@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scholarships | linger</title>
+<meta name="description" content="Study abroad scholarships and a few for high schoolers, with live deadline countdowns.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<div class="hero sub">
+  <div class="wrap">
+    <div class="eyebrow">Funding</div>
+    <h1>Scholarships, so cost doesn't decide for you.</h1>
+    <p class="lede">Study abroad awards first, plus a few for high schoolers. Save the ones you're applying for; they stay on this device. Deadlines last checked <b>Oct 30, 2026</b>. Always confirm on the official site before you apply.</p>
+  </div>
+</div>
+<section>
+  <div class="wrap">
+    <div class="filters" role="group" aria-label="Filter scholarships">
+      <button class="chip" data-f="all" aria-pressed="true">All</button>
+      <button class="chip" data-f="abroad" aria-pressed="false">Study abroad</button>
+      <button class="chip" data-f="hs" aria-pressed="false">Before college</button>
+      <button class="chip" data-f="need" aria-pressed="false">Need-based / first-gen</button>
+      <button class="chip" data-f="lang" aria-pressed="false">Language</button>
+      <button class="chip" data-f="saved" aria-pressed="false">My saved (<span id="savedCount">0</span>)</button>
+    </div>
+    <div class="sch-list" id="schList"></div>
+  </div>
+</section>
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head"><div class="eyebrow">Funding 101</div><h2>How to actually get it</h2></div>
+    <div class="grid">
+      <div class="card step"><h3>Start with your program</h3><p>Providers like IES, CIEE and AIFS have their own aid, often with first-gen awards and shorter applications.</p></div>
+      <div class="card step"><h3>Ask your campus office early</h3><p>Boren and some others need a campus review weeks before the national deadline.</p></div>
+      <div class="card step"><h3>Pell Grant? Look at Gilman</h3><p>It's built for students receiving Pell, and pairs well with program aid.</p></div>
+      <div class="card step"><h3>Reuse your story</h3><p>One strong essay on why this place, and what you'll bring back, adapts to most applications.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer id="site-footer"></footer>
+<script src="/assets/site.js"></script>
+<script>
+(function(){
+"use strict";
+var L = window.Linger, $ = function(s){ return document.querySelector(s); };
+var SCH=[
+ {id:"cls",name:"Critical Language Scholarship",url:"https://clscholarship.org/",award:"Fully funded summer language program",detail:"Travel, tuition, room and board",deadline:"2026-11-17",dtext:"Nov 17, 2026 (summer 2027)",who:"US citizens in a degree program studying a critical-need language",tags:["abroad","lang"]},
+ {id:"boren",name:"Boren Scholarship",url:"https://www.borenawards.org/",award:"$8,000–$25,000",detail:"$12,500 for a semester; $25,000 for a year",deadline:"2027-01-27",dtext:"Jan 27, 2027 (campus deadlines earlier)",who:"Undergrads studying less-taught languages outside Western Europe; requires a year of federal service after",tags:["abroad","lang"]},
+ {id:"gilman",name:"Gilman Scholarship",url:"https://www.gilmanscholarship.org/",award:"Up to $5,000",detail:"Extra funding available for critical-need languages",deadline:null,dtext:"Late Feb / early Mar 2027 for summer 2027 onward",who:"US citizens receiving a Pell Grant",tags:["abroad","need"]},
+ {id:"fea",name:"Fund for Education Abroad",url:"https://www.fundforeducationabroad.org/",award:"$1,250–$10,000",detail:"Summer through full-year awards",deadline:null,dtext:"Summer/Fall 2027 cycle opens late 2026; last cycle closed early Feb",who:"Undergrads with financial need, especially first-gen and underrepresented students",tags:["abroad","need"]},
+ {id:"freeman",name:"Freeman-ASIA",url:"https://www.iie.org/Programs/Freeman-ASIA/Apply",award:"Up to $7,000",detail:"$3,000 summer · $5,000 semester · $7,000 year",deadline:null,dtext:"Opens Feb 2027; usually due early April",who:"Undergrads with financial need studying in East or Southeast Asia",tags:["abroad","need"]},
+ {id:"ciee",name:"CIEE scholarships & fellowships",url:"https://www.ciee.org/scholarships",award:"Grants up to $10,000",detail:"CIEE gives over $13M a year",deadline:null,dtext:"Varies by award and term",who:"Students on CIEE programs; several aimed at first-gen and Pell-eligible students",tags:["abroad","need"]},
+ {id:"ies",name:"IES Abroad aid",url:"https://www.iesabroad.org/scholarships-aid",award:"Varies",detail:"Aid quoted within about 5 business days of a short application",deadline:null,dtext:"Tied to each program's deadline",who:"Students on IES programs; includes first-gen awards",tags:["abroad","need"]},
+ {id:"horatio",name:"Horatio Alger National Scholarship",url:"https://scholars.horatioalger.org/",award:"$25,000",detail:"105 national awards",deadline:"2027-03-01",dtext:"Opens Dec 1, 2026 · due Mar 1, 2027",who:"High school juniors with financial need who've overcome adversity",tags:["hs","need"]},
+ {id:"elks",name:"Elks Most Valuable Student",url:"https://www.elks.org/scholars/scholarships/mvs.cfm",award:"$4,000–$30,000",detail:"Over four years",deadline:"2026-11-12",dtext:"Nov 12, 2026",who:"High school seniors; judged on scholarship, leadership and need",tags:["hs","need"]},
+ {id:"davidson",name:"Davidson Fellows",url:"https://www.davidsongifted.org/gifted-programs/fellows-scholarship/",award:"$25,000–$100,000",detail:"For a significant project in STEM, literature, music or philosophy",deadline:"2027-02-10",dtext:"About Feb 10, 2027",who:"Students 18 and under with a major original project",tags:["hs"]}
+];
+var filter = "all", saved = L.get("linger.saved", []);
+function parseISO(s){ var p=s.split("-").map(Number); return new Date(p[0],p[1]-1,p[2]); }
+function daysUntil(d){ var t=new Date(); t.setHours(0,0,0,0); return Math.round((parseISO(d)-t)/864e5); }
+function badge(s){
+  if(!s.deadline) return '<span class="badge tbd">Date TBA</span>';
+  var n=daysUntil(s.deadline);
+  if(n<0) return '<span class="badge closed">Closed</span>';
+  if(n===0) return '<span class="badge soon">Due today</span>';
+  if(n<=30) return '<span class="badge soon">'+n+' day'+(n===1?"":"s")+' left</span>';
+  return '<span class="badge open">'+n+' days left</span>';
+}
+function rank(s){ if(!s.deadline) return 5000; var n=daysUntil(s.deadline); return n<0?9000:n; }
+function render(){
+  $("#savedCount").textContent = saved.length;
+  var list = SCH.filter(function(s){ return filter==="all" || (filter==="saved" ? saved.indexOf(s.id)>=0 : s.tags.indexOf(filter)>=0); })
+    .sort(function(a,b){ return rank(a)-rank(b); });
+  $("#schList").innerHTML = list.length ? list.map(function(s){ var on=saved.indexOf(s.id)>=0; return ''+
+    '<article class="card sch">'+
+      '<div style="display:flex;justify-content:space-between;gap:8px;align-items:start">'+badge(s)+'<span class="muted small">'+(s.tags.indexOf("hs")>=0?"Before college":"Study abroad")+'</span></div>'+
+      '<h3>'+L.esc(s.name)+'</h3>'+
+      '<div><div class="award">'+L.esc(s.award)+'</div><p class="meta">'+L.esc(s.detail)+'</p></div>'+
+      '<p class="meta"><b style="color:var(--ink)">Deadline:</b> '+L.esc(s.dtext)+'</p>'+
+      '<p class="meta"><b style="color:var(--ink)">For:</b> '+L.esc(s.who)+'</p>'+
+      '<div class="foot"><a href="'+s.url+'" target="_blank" rel="noopener">Official site ↗</a>'+
+      '<button class="save" type="button" data-save="'+s.id+'" aria-pressed="'+on+'">'+(on?"✓ Saved":"Save")+'</button></div>'+
+    '</article>'; }).join("")
+    : '<div class="card muted">'+(filter==="saved"?"Nothing saved yet. Tap Save on any scholarship to keep it here.":"Nothing here yet.")+'</div>';
+}
+document.querySelector(".filters").addEventListener("click", function(e){ var b=e.target.closest(".chip"); if(!b) return; filter=b.dataset.f;
+  document.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", String(c===b)); }); render(); });
+$("#schList").addEventListener("click", function(e){ var b=e.target.closest("[data-save]"); if(!b) return; var id=b.dataset.save;
+  saved = saved.indexOf(id)>=0 ? saved.filter(function(x){return x!==id;}) : saved.concat([id]); L.set("linger.saved", saved); render();
+  var nb=document.querySelector('[data-save="'+id+'"]'); if(nb) nb.focus(); });
+render();
+})();
+</script>
+</body>
+</html>

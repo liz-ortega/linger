@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before you go | linger</title>
+<meta name="description" content="The things nobody tells you to think about before studying abroad: health plans, goals, friends, call times, money and more.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<div class="hero sub">
+  <div class="wrap">
+    <div class="eyebrow">Before you go</div>
+    <h1>The things nobody told me to think about.</h1>
+    <p class="lede">It's easy to say "I'll be okay" and figure it out later. Then the time comes, and you'd rather be out enjoying it than scrambling. This is what I wish I'd set up before my semester in Copenhagen.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="tip-group">
+      <h2>Take care of yourself</h2>
+      <div class="grid two">
+        <div class="card step"><div class="n">Body</div><h3>Make a sick plan</h3><p>Know what works for you when you catch a cold or whatever you usually get easily. For me, tea and honey are my go-to, so step one in a new city was finding where to buy them.</p><ul><li>Pack your usual cold and allergy basics</li><li>Bring prescriptions in your carry-on, in original packaging, and check that country's medicine rules</li><li>Find the nearest pharmacy and clinic in your first week</li></ul></div>
+        <div class="card step"><div class="n">Mind</div><h3>Set up support before you need it</h3><p>Get a checkup and talk to a professional before you leave. Make an action plan together for the hard days, so you can feel supported and still enjoy it.</p><ul><li>Ask whether your therapist or campus counseling can keep seeing you online from abroad</li><li>Find out what your program and your insurance offer there</li><li>Write down who you'd call, and save the numbers in your phone</li></ul></div>
+      </div>
+      <p class="note" style="margin-top:16px">Homesickness and culture shock are normal, and often hit a few weeks in. Your program office and your home campus counseling center can still help while you're abroad. In a crisis, call your local emergency number (112 across the EU). In the US, call or text 988.</p>
+    </div>
+
+    <div class="tip-group">
+      <h2>Know your why</h2>
+      <div class="card step"><div class="n">Goals</div><h3>Decide what you want to get out of it</h3><p>A semester goes by fast. If you know what you're there for, you'll spend your time on what matters. For me it was three things: meeting new people, learning some of the language, and getting academic and professional experience I couldn't get anywhere else. So I did an internship and research while I was there. Write down your two or three, and check back on them halfway through.</p></div>
+    </div>
+
+    <div class="tip-group">
+      <h2>Your people</h2>
+      <div class="grid">
+        <div class="card step"><div class="n">Friends</div><h3>Find your people</h3><p>Just like at home, not everyone will be your cup of tea, and not every group will feel right. That's okay. Keep showing up, stay true to who you are, and you'll find the people who make you feel good.</p></div>
+        <div class="card step"><div class="n">Home</div><h3>Set call times early</h3><p>Before you leave, agree on roughly when you're free and when your family is. A weekly rhythm beats guessing across time zones. The clock below helps.</p></div>
+        <div class="card step"><div class="n">Keepsakes</div><h3>Find your way to remember</h3><p>For me it was decorating and curating little photo posts. It kept my family in the loop and kept every memory safe in one place. Find the version that's yours.</p></div>
+      </div>
+    </div>
+
+    <div class="tip-group">
+      <h2>The practical stuff</h2>
+      <div class="grid">
+        <div class="card step"><div class="n">Plugs</div><h3>Get the right adapters</h3><p>Check the plug type for every country you'll visit, not just where you live. Bring a couple of adapters and a power strip so one adapter charges everything.</p></div>
+        <div class="card step"><div class="n">Money</div><h3>Build a cushion</h3><p>A side gig before you go, or a few <a href="/scholarships">scholarship</a> applications, gives you room to say yes to trips instead of stressing over every euro.</p></div>
+        <div class="card step"><div class="n">Language</div><h3>Learn a little first</h3><p>Even a few weeks of Duolingo before you land makes ordering coffee and asking directions less scary, and helps a new place feel like yours faster.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="clock">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Feature</div>
+      <h2>Call-home clock</h2>
+      <p>Pick where you are and where home is. The orange hours are when you're both awake (8am–11pm). In the Linger app, you can save everyone you call.</p>
+    </div>
+    <div class="grid two">
+      <div class="card"><label for="tzHere">I'm in</label><select id="tzHere"></select><div class="bigtime" id="timeHere"></div><div class="muted small" id="dayHere"></div></div>
+      <div class="card"><label for="tzHome">Home is</label><select id="tzHome"></select><div class="bigtime" id="timeHome"></div><div class="muted small" id="dayHome"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+        <h3 style="font-size:22px" id="callVerdict"></h3><span class="muted small">Next 24 hours, your time</span>
+      </div>
+      <div class="hours" id="hours" role="img" aria-label=""></div>
+      <div class="hours-labels" id="hoursLabels" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-band">
+      <div><h2>Next up: what to pack.</h2><p>A checklist for the big bag and the weekend bag.</p></div>
+      <a class="btn" href="/packing">Open the packing list</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer id="site-footer"></footer>
+<script src="/assets/site.js"></script>
+<script>
+(function(){
+"use strict";
+var L=window.Linger, $=function(s){return document.querySelector(s);};
+var ZONES=[["Copenhagen","Europe/Copenhagen"],["Stockholm","Europe/Stockholm"],["London","Europe/London"],["Dublin","Europe/Dublin"],["Paris","Europe/Paris"],["Barcelona / Madrid","Europe/Madrid"],["Rome / Florence","Europe/Rome"],["Berlin","Europe/Berlin"],["Amsterdam","Europe/Amsterdam"],["Prague","Europe/Prague"],["Vienna","Europe/Vienna"],["Lisbon","Europe/Lisbon"],["Athens","Europe/Athens"],["Istanbul","Europe/Istanbul"],["Cape Town","Africa/Johannesburg"],["Accra","Africa/Accra"],["Dubai","Asia/Dubai"],["Seoul","Asia/Seoul"],["Tokyo","Asia/Tokyo"],["Shanghai","Asia/Shanghai"],["Singapore","Asia/Singapore"],["Sydney","Australia/Sydney"],["Buenos Aires","America/Argentina/Buenos_Aires"],["Mexico City","America/Mexico_City"],["São Paulo","America/Sao_Paulo"],["Los Angeles (Pacific)","America/Los_Angeles"],["Denver (Mountain)","America/Denver"],["Phoenix","America/Phoenix"],["Chicago (Central)","America/Chicago"],["New York (Eastern)","America/New_York"],["Honolulu","Pacific/Honolulu"],["Anchorage","America/Anchorage"],["San Juan","America/Puerto_Rico"]];
+function fill(sel,val){ ZONES.forEach(function(z){ var o=document.createElement("option"); o.value=z[1]; o.textContent=z[0]; sel.appendChild(o); }); sel.value=val; }
+var guess="America/Los_Angeles"; try{ guess=Intl.DateTimeFormat().resolvedOptions().timeZone||guess; }catch(e){}
+var known=ZONES.some(function(z){return z[1]===guess;});
+var ch=L.get("linger.callhome",null);
+fill($("#tzHere"), ch?ch.here:(known&&guess.indexOf("America")!==0?guess:"Europe/Copenhagen"));
+fill($("#tzHome"), ch?ch.home:(known&&guess.indexOf("America")===0?guess:"America/Los_Angeles"));
+function hourIn(tz,d){ return +new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"numeric",hourCycle:"h23"}).format(d); }
+function fmtTime(tz,d){ return new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit"}).format(d); }
+function fmtDay(tz,d){ return new Intl.DateTimeFormat("en-US",{timeZone:tz,weekday:"long",month:"short",day:"numeric"}).format(d); }
+function fmtHour(h){ return h===0?"12a":h<12?h+"a":h===12?"12p":(h-12)+"p"; }
+function awake(h){ return h>=8&&h<23; }
+function render(){
+  var here=$("#tzHere").value, home=$("#tzHome").value; L.set("linger.callhome",{here:here,home:home});
+  var now=new Date();
+  $("#timeHere").textContent=fmtTime(here,now); $("#dayHere").textContent=fmtDay(here,now);
+  $("#timeHome").textContent=fmtTime(home,now); $("#dayHome").textContent=fmtDay(home,now);
+  var base=new Date(now); base.setMinutes(0,0,0);
+  var cells="",labels="",ok=[],first=null;
+  for(var k=0;k<24;k++){ var t=new Date(base.getTime()+k*36e5), hh=hourIn(here,t), hm=hourIn(home,t), good=awake(hh)&&awake(hm);
+    if(good){ ok.push(t); if(first===null) first=k; }
+    cells+='<div class="hr'+(good?" ok":"")+(k===0?" now":"")+'" title="'+fmtHour(hh)+' here · '+fmtHour(hm)+' home"></div>'; labels+='<span>'+fmtHour(hh)+'</span>'; }
+  $("#hours").innerHTML=cells; $("#hoursLabels").innerHTML=labels;
+  var v = !ok.length ? "No easy overlap today. Try a weekend morning." : first===0 ? "Good time to call now. It's "+fmtTime(home,now)+" at home." : "Next good window: "+fmtTime(here,ok[0])+" your time ("+fmtTime(home,ok[0])+" at home).";
+  $("#callVerdict").textContent=v; $("#hours").setAttribute("aria-label", ok.length+" of the next 24 hours work for both of you. "+v);
+}
+$("#tzHere").addEventListener("change",render); $("#tzHome").addEventListener("change",render);
+render(); setInterval(render,30000);
+})();
+</script>
+</body>
+</html>
