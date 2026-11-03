@@ -310,8 +310,7 @@ function viewAuth() {
     : '<div class="eyebrow">Welcome back</div><h1>Log in to Linger.</h1><p class="muted">We\'ll email you a link to sign in.</p>';
   var body;
   if (S.sent) {
-    body = '<div class="card"><h2 style="font-size:22px">Check your inbox</h2><p class="muted">We sent a sign-in link to <b>' + esc(S.sent) + '</b>. Open it on this device. It can take a minute; check spam too.</p>' +
-      '<form data-form="code" class="field"><label class="f" for="otp">Or enter the code from the email</label><div class="row"><input id="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="6-digit code"><button class="btn small" type="submit">Sign in</button></div></form>' +
+    body = '<div class="card"><h2 style="font-size:22px">Check your inbox</h2><p class="muted">We sent a sign-in link to <b>' + esc(S.sent) + '</b>. Open it on this device. It can take a minute, so check spam too. On a phone, open the link in the same browser you\'ll use Linger in.</p>' +
       '<div class="wrap-row"><button class="btn ghost small" data-act="resend" type="button">Send again</button><button class="btn ghost small" data-act="authReset" type="button">Use a different email</button></div></div>';
   } else {
     body = '<form class="card" data-form="auth"><label class="f" for="email">Email</label><input id="email" type="email" autocomplete="email" required placeholder="you@school.edu"><div style="height:12px"></div><button class="btn" type="submit" style="width:100%">' + (signup ? "Create account" : "Email me a sign-in link") + "</button></form>" +
